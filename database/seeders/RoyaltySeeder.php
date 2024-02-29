@@ -5,13 +5,13 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PublishingSeeder extends Seeder
+class RoyaltySeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        \App\Models\Publishing::factory(10)->create();
+        \App\Models\Royalty::factory(10)->create();
     }
 }

@@ -2,24 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Publishing;
+use App\Models\Royalty;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use PhpParser\Node\Expr\Cast\Array_;
 use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\Filters\Filter;
-
 use Spatie\QueryBuilder\QueryBuilder;
 
-use function Laravel\Prompts\search;
 
-class PublishingController extends Controller
+class RoyaltyController extends Controller
 {
-
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:sanctum')->except(['index', 'store']);
-    // }
 
     /**
      * Display a listing of the resource.
@@ -28,9 +20,9 @@ class PublishingController extends Controller
     {
         $sortByColumn = preg_replace("/-/", '', $request->sort);
 
-        $columns = Schema::getColumnListing((new Publishing())->getTable());
+        // $columns = Schema::getColumnListing((new Royalty())->getTable());
 
-        $result = QueryBuilder::for(Publishing::class)
+        $result = QueryBuilder::for(Royalty::class)
 
             // ---- 01 ---- using help of scopeFilter with AlllowedFilter::class from model
             ->allowedFilters(['id', "YTD_avg_discount_%", AllowedFilter::scope('search')])
@@ -61,25 +53,35 @@ class PublishingController extends Controller
 
         // return response($result);
         return response()->json([$result, $request->search], 200);
-        logger($request->search);
     }
 
     public function store(Request $request)
     {
         $all_rows = $request->all();
+        $duplicates = [];
+        $imported = 0;
 
-        collect($all_rows)->map(function ($obj_) {
-            $per_row = [];
-            foreach ($obj_ as $key => $value) {
-                $per_row[$key] = $value;
-            };
-            Publishing::create($per_row);
-            logger($per_row);
+        DB::transaction(function () use ($all_rows, &$duplicates, &$imported) {
+            collect($all_rows)->map(function ($obj_) use (&$duplicates, &$imported) {
+                $per_row = [];
+                foreach ($obj_ as $key => $value) {
+                    $per_row[$key] = $value;
+                };
+                $duplicate = Royalty::where('isbn', $per_row['isbn'])->first();
+                if ($duplicate) {
+                    $duplicates[] = $per_row;
+                } else {
+                    Royalty::create($per_row);
+                    $imported++;
+                }
+            });
         });
+        logger([$duplicates, $imported]);
 
         return response([
-            "message" => "Successfully saved to database"
-        ], 200);
+            "imported" => $imported,
+            "duplicates" => $duplicates
+        ], 201);
     }
 
     /**
@@ -87,14 +89,14 @@ class PublishingController extends Controller
      */
     public function show(string $id)
     {
-        // return is_null($id) ? Publishing::all() : Publishing::find($id);
-        return Publishing::find($id);
+        // return is_null($id) ? Royalty::all() : Royalty::find($id);
+        return Royalty::find($id);
     }
 
     public function chooseFilter(Request $request)
     {
         $sortByColumn = preg_replace("/-/", '', $request->sort);
-        $result = QueryBuilder::for(Publishing::class)
+        $result = QueryBuilder::for(Royalty::class)
             // ->allowedFilters(['result'])
 
             // searching with desired field

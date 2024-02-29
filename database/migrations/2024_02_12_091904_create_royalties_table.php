@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('publishings', function (Blueprint $table) {
+        Schema::create('royalties', function (Blueprint $table) {
             $table->id();
             $table->integer('publisher_number')->nullable();
             $table->string('publisher_name')->nullable();
@@ -95,6 +95,8 @@ return new class extends Migration
             $table->decimal('Ytd_global_distribution_fee', 10, 2)->nullable();
             $table->decimal('Ytd_global_distribution_fee_tax', 10, 2)->nullable();
             $table->timestamps();
+
+            $table->unique('isbn');
         });
     }
 
@@ -103,6 +105,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('publishings');
+        Schema::dropIfExists('royalties');
     }
 };

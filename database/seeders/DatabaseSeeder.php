@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Publishing;
 use App\Models\User;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,12 +17,20 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         User::factory(1)->create([
-            'name' => 'ArchieM',
+            'name' => 'mananap',
+            'email' => 'man@nan.app',
+            'password' => Hash::make('secret')
+        ]);
+
+        User::factory(1)->create([
+            'name' => 'Clod Malinao',
+            'email' => 'clod@ecp.co',
+            'password' => Hash::make('secret')
         ]);
 
 
-        // \App\Models\Publishing::factory(10)->create();
+        // \App\Models\Royalty::factory(10)->create();
         // or you may call this way
-        // $this->call(PublishingSeeder::class);
+        // $this->call(Royalty::class);
     }
 }

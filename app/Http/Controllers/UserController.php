@@ -66,7 +66,7 @@ class UserController extends Controller
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response([
-                "message" => "Wrong Credentials"
+                "message" => "Invalid Credentials"
             ], 401);
         }
 
@@ -102,7 +102,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // 
+        //
     }
 
 
@@ -119,7 +119,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // 
+        //
     }
 
     /**
