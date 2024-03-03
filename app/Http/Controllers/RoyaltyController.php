@@ -52,7 +52,7 @@ class RoyaltyController extends Controller
             ->get();
 
         // return response($result);
-        return response()->json([$result, $request->search], 200);
+        return response()->json($result, 200);
     }
 
     public function store(Request $request)
@@ -62,21 +62,21 @@ class RoyaltyController extends Controller
         $imported = 0;
 
         DB::transaction(function () use ($all_rows, &$duplicates, &$imported) {
-            collect($all_rows)->map(function ($obj_) use (&$duplicates, &$imported) {
+            collect($all_rows)->map(function ($obj_, $index) use (&$duplicates, &$imported) {
                 $per_row = [];
                 foreach ($obj_ as $key => $value) {
                     $per_row[$key] = $value;
                 };
                 $duplicate = Royalty::where('isbn', $per_row['isbn'])->first();
+
                 if ($duplicate) {
-                    $duplicates[] = $per_row;
+                    $duplicates[] = $index;
                 } else {
                     Royalty::create($per_row);
                     $imported++;
                 }
             });
         });
-        logger([$duplicates, $imported]);
 
         return response([
             "imported" => $imported,
