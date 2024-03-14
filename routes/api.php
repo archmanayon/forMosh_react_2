@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Royalty;
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,7 +16,6 @@ use App\Models\Royalty;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('royalty', RoyaltyController::class)->except(['update', 'destroy']);
 
@@ -40,3 +38,28 @@ Route::post('register', [UserController::class, 'create']);
 //         return $id;
 //     }
 // ]);
+
+
+Route::get('mosh', function(){
+    return response()->json(Royalty::all(), 200);
+});
+
+Route::post('mosh', function (Request $request)
+
+{   
+    $fields = $request->validate([
+        'id' => 'required|numeric',
+        'publisher_number' => 'required|string',
+        'title' => 'required|string',
+        'author' => 'required|string'
+    ]);
+
+    $user = Royalty::create($fields);        
+
+    return logger($user. 'or'. $request);
+    // response([
+    //     "testing" => $request,
+    //     "imported" => $imported??false,
+    //     "duplicates" => $duplicates??false,
+    // ], 201);
+});
