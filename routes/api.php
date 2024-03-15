@@ -57,6 +57,7 @@ Route::post('mosh', function (Request $request)
     $user = Royalty::create($fields);        
 
     return logger($user. 'or'. $request);
+    
     // response([
     //     "testing" => $request,
     //     "imported" => $imported??false,
