@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoyaltyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -39,6 +40,13 @@ Route::post('register', [UserController::class, 'create']);
 //     }
 // ]);
 
+Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
+// waiting for front end link, where to input the new password
+Route::get('/request-reset', [UserController::class, 'requestReset']);
+Route::post('reset-password', [UserController::class,'resetPassword']);
+
+// sample notification
+Route::post('/notify', [NotificationController::class,'notify']);
 
 Route::get('mosh', function(){
     return response()->json(Royalty::all(), 200);
@@ -58,9 +66,9 @@ Route::post('mosh', function (Request $request)
 
     return logger($user. 'or'. $request);
     
-    // response([
-    //     "testing" => $request,
-    //     "imported" => $imported??false,
-    //     "duplicates" => $duplicates??false,
-    // ], 201);
+    response([
+        "testing" => $request,
+        "imported" => $imported??false,
+        "duplicates" => $duplicates??false,
+    ], 201);
 });

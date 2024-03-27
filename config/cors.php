@@ -21,7 +21,8 @@ return [
 
     'allowed_origins' => [
         'https://royalties.mananapp.com',
-        'http://localhost:8080'
+        'http://localhost:8080',
+        'http://localhost:8081'
     ],
 
     'allowed_origins_patterns' => [],

@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MyEmail extends Mailable
+class ForgotPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,7 +29,7 @@ class MyEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->data[0]['subject'],
+            subject: "token reset",
         );
     }
 
@@ -39,9 +39,11 @@ class MyEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.myEmail',
-            with: ['datta' => "datta from MAIL.php"],
-        );
+            view: 'emails.resetPassword',
+            with: [
+                'token' => $this->data,
+                'reset_message' => "Reset your password"
+        ]);
     }
 
     /**

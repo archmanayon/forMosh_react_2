@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ForgotPasswordMail;
+use App\Mail\MyEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 
 class UserController extends Controller
@@ -91,6 +97,65 @@ class UserController extends Controller
 
         // to completely destroy token from db
         // auth()->user()->tokens()->delete();
+    }
+ 
+    public function forgotPassword(Request $request){
+        $fields = $request->validate([
+            'email' =>'required|email|exists:users',
+        ]);
+
+        $token = Str::random(length: 64);
+
+        $pwDB = DB::table(table:'password_reset_tokens')->insert([
+            'email' => $fields['email'],
+            'token' => $token,
+            'created_at' => Carbon::now()
+
+        ]);
+        
+        $sending = Mail::to($fields['email'])
+        ->send(new ForgotPasswordMail ($token));
+
+        return response()->json([$token, 'Char token'], 200);
+    }
+
+    public function requestReset(Request $request){
+        // waiting for front end link, where to input the new password
+        return "ang token kay".$request['token'];
+    }
+
+    public function resetPassword(Request $request){        
+        $fields = $request->validate([
+            'token' => 'required|exists:password_reset_tokens',
+            'email' => 'required|email|exists:users',
+            'password' => 'required|string|confirmed',
+            'password_confirmation' => 'required',
+        ]);
+
+        $correct_token = DB::table('password_reset_tokens')
+            ->where([
+                'email' => $fields['email'],
+                'token' => $fields['token']
+            ]);
+        
+        if (!$correct_token->first()) {
+            return response([
+                "message" => "Invalid Token"
+            ], 401);
+        }
+
+        $user = User::where('email', $fields['email'])->first();
+       
+        $user->update([
+            'password' => bcrypt($fields['password'])
+        ]);
+
+        $correct_token->delete();
+
+        return response()->json([
+            "message" => "Successfully updated password",
+        ], 200);
+
     }
 
     /**
