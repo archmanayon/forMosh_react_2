@@ -100,18 +100,28 @@ class UserController extends Controller
     }
  
     public function forgotPassword(Request $request){
+        
+        $token = "";
+
         $fields = $request->validate([
             'email' =>'required|email|exists:users',
         ]);
 
-        $token = Str::random(length: 64);
-
-        $pwDB = DB::table(table:'password_reset_tokens')->insert([
-            'email' => $fields['email'],
-            'token' => $token,
-            'created_at' => Carbon::now()
-
-        ]);
+        $attempt = DB::table('password_reset_tokens')
+            ->where([
+                'email' => $fields['email']
+            ])->first();
+        
+        if ($attempt) {
+            $token = $attempt->token;
+        } else { 
+            $token = Str::random(length: 64);
+            $pwDB = DB::table(table:'password_reset_tokens')->insert([
+                'email' => $fields['email'],
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
+        }        
         
         $sending = Mail::to($fields['email'])
         ->send(new ForgotPasswordMail ($token));
@@ -132,6 +142,7 @@ class UserController extends Controller
             'password_confirmation' => 'required',
         ]);
 
+        // just to get correct token for pw request to be deleted once updated to new pw
         $correct_token = DB::table('password_reset_tokens')
             ->where([
                 'email' => $fields['email'],
@@ -146,14 +157,16 @@ class UserController extends Controller
 
         $user = User::where('email', $fields['email'])->first();
        
+        logger($fields['token']);
         $user->update([
             'password' => bcrypt($fields['password'])
         ]);
 
-        $correct_token->delete();
+        // $correct_token->delete();
 
         return response()->json([
             "message" => "Successfully updated password",
+            "token" => $fields['token']
         ], 200);
 
     }
