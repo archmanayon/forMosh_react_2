@@ -110,13 +110,19 @@ class UserController extends Controller
         $attempt = DB::table('password_reset_tokens')
             ->where([
                 'email' => $fields['email']
-            ])->first();
+            ]);
         
-        if ($attempt) {
-            $token = $attempt->token;
-        } else { 
+        if ($attempt->first()) {
+            $attempt->delete();
             $token = Str::random(length: 64);
-            $pwDB = DB::table(table:'password_reset_tokens')->insert([
+            DB::table(table:'password_reset_tokens')->insert([
+                'email' => $fields['email'],
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]);
+                    
+        } else {$token = Str::random(length: 64);
+            DB::table(table:'password_reset_tokens')->insert([
                 'email' => $fields['email'],
                 'token' => $token,
                 'created_at' => Carbon::now()
@@ -162,11 +168,10 @@ class UserController extends Controller
             'password' => bcrypt($fields['password'])
         ]);
 
-        // $correct_token->delete();
+        $correct_token->delete();
 
         return response()->json([
             "message" => "Successfully updated password",
-            "token" => $fields['token']
         ], 200);
 
     }
