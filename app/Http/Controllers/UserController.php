@@ -121,7 +121,8 @@ class UserController extends Controller
                 'created_at' => Carbon::now()
             ]);
                     
-        } else {$token = Str::random(length: 64);
+        } else {
+            $token = Str::random(length: 64);
             DB::table(table:'password_reset_tokens')->insert([
                 'email' => $fields['email'],
                 'token' => $token,
