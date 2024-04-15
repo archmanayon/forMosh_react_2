@@ -97,6 +97,65 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique('isbn');
+            
+            // BISG upload table
+            $table->string('ReportID')->nullable();
+            $table->string('ReportDateTime')->nullable();
+            $table->string('MessageFunction')->nullable();
+            $table->string('SalesReportType')->nullable();
+            $table->string('ReportPeriodFrom')->nullable();
+            $table->string('ReportPeriodTo')->nullable();
+            $table->string('ReportDate')->nullable();
+            $table->string('ReportingPriceType')->nullable();
+            $table->string('ReportingCurrency')->nullable();
+            $table->string('ClassOfTrade/Sale')->nullable();
+            $table->string('SalesTerritory')->nullable();
+            $table->string('LineItemID#')->nullable();
+            $table->string('SubAgentID#')->nullable();
+            $table->string('SubAgentName')->nullable();
+            $table->string('TransactionDateTime')->nullable();
+            $table->string('AgentsTransactionID#')->nullable();
+            $table->string('LineItemReferenceType')->nullable();
+            $table->string('LineItemReferenceID#')->nullable();
+            $table->string('LineItemReferenceDateTime')->nullable();
+            $table->string('MainProductID#Type')->nullable();
+            $table->string('AlternativeProductID#Type')->nullable();
+            $table->string('AlternativeProductID#')->nullable();
+            $table->string('ProductDescription')->nullable();
+            $table->string('PublisherID#')->nullable();
+            $table->string('PublisherName')->nullable();
+            $table->string('ImprintName')->nullable();
+            $table->string('DeviceType')->nullable();
+            $table->integer('NetSoldQuantity')->nullable();
+            $table->integer('NonSaleQuantity')->nullable();
+            $table->string('NonSaleDisposalType')->nullable();
+            $table->string('ClassOfTradeSale')->nullable();
+            $table->string('PriceType')->nullable();
+            $table->string('PriceCurrency')->nullable();
+            $table->decimal('CommissionDiscountPercentage', 10, 2)->nullable();
+            $table->decimal('ReturnedRefundedValue', 10, 2)->nullable();
+            $table->string('FeeType1')->nullable();
+            $table->decimal('FeeAmount1', 10, 2)->nullable();
+            $table->string('FeeSource1')->nullable();
+            $table->string('FeeType2')->nullable();
+            $table->decimal('FeeAmount2', 10, 2)->nullable();
+            $table->string('FeeSource2')->nullable();
+            $table->string('FeeType3')->nullable();
+            $table->decimal('FeeAmount3', 10, 2)->nullable();
+            $table->string('FeeSource3')->nullable();
+            $table->decimal('ProceedsOfSaleDuePublisher', 10, 2)->nullable();
+            $table->integer('TotalNumberOfLineItems')->nullable();
+            $table->integer('TotalGrossSoldQuantity')->nullable();
+            $table->integer('TotalReturnedRefundedQuantity')->nullable();
+            $table->integer('TotalNetSoldQuantity')->nullable();
+            $table->integer('TotalNonSaleQuantity')->nullable();
+            $table->decimal('TotalGrossSoldValue', 10, 2)->nullable();
+            $table->decimal('TotalReturnedRefundedValue', 10, 2)->nullable();
+            $table->decimal('TotalNetSoldValueBeforeFees', 10, 2)->nullable();
+            $table->decimal('TotalFeesOfAllTypes', 10, 2)->nullable();
+            $table->decimal('TotalProceedsDueToPublisher', 10, 2)->nullable();
+            $table->string('Ebook Sales Models')->nullable();
+
         });
     }
 
