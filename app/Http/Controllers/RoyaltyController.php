@@ -65,7 +65,50 @@ class RoyaltyController extends Controller
             collect($all_rows)->map(function ($obj_, $index) use (&$duplicates, &$imported) {
                 $per_row = [];
                 foreach ($obj_ as $key => $value) {
-                    $per_row[$key] = $value;
+                    switch ($key) {
+                        case 'MainProductID#':
+                            $per_row['isbn'] = $value;
+                            break;
+
+                        case 'ProductTitle':
+                            $per_row['title'] = $value;
+                            break;
+                            
+                        case 'ProductAuthor(s)':
+                            $per_row['author'] = $value;
+                            break;
+                            
+                        case 'ProductFormat':
+                            $per_row['binding_type'] = $value;
+                            break;
+
+                        case 'GrossSoldQuantity':
+                            $per_row['PTD_Quantity'] = $value;
+                            break;
+
+                        case 'ReturnedRefundedQuantity':
+                            $per_row['PTD_return_quantity'] = $value;
+                            break;
+                            
+                        case 'SalesTerritory':                            
+                            $per_row['market'] = $value;
+                            break;
+                            
+                        case 'UnitPrice':
+                            $per_row['list_price'] = $value;
+                            break;
+                        case 'GrossSoldValue':
+                            $per_row['PTD_pub_comp'] = $value;
+                            break;
+                    
+                        case 'NetValueBeforeFees':
+                            $per_row['PTD_net_pub_comp'] = $value;
+                            break;
+                                                                                                         
+                        default:
+                            $per_row[$key] = $value;
+                            break;
+                    }
                 };
                 $duplicate = Royalty::where('isbn', $per_row['isbn'])->first();
 
