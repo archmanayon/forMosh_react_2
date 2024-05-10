@@ -17,7 +17,7 @@ class RoyaltyFactory extends Factory
     public function definition(): array
     {
         return [
-            'publisher_number' => $this->faker->numberBetween(0000001,9999999),
+            'market' => $this->faker->numberBetween(0000001,9999999),
             'publisher_name' => $this->faker->text(10),
             'isbn' => $this->faker->regexify('[0-9A-Z]{10}'),
             'sku' => $this->faker->regexify('[0-9A-Z]{10}'),

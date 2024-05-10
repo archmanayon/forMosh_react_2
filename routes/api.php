@@ -57,7 +57,7 @@ Route::post('mosh', function (Request $request)
 {   
     $fields = $request->validate([
         'id' => 'required|numeric',
-        'publisher_number' => 'required|string',
+        'market' => 'required|string',
         'title' => 'required|string',
         'author' => 'required|string'
     ]);
